@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/stylebem.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+    <title>Test BEM</title>
+</head>
+<body>
+    <div>
+        <button onclick="showToastMessageSuccess()" class="btn btn--success">Show toast message Success</button>
+        <button onclick="showToastMessageWarn()" class="btn btn--warn">Show toast message Warning</button>
+        <!-- <button class="btn btn--danger">Show toast message Warning</button> -->
+    </div>
+
+    <!-- success -->
+    <div id="toast"></div>
+
+    <!-- info -->
+    <div class="toast toast--info">
+        <div class="toast__icon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="toast__body">
+            <h3 class="toast__title">Infomation</h3>
+            <p class="toast__msg">Chúc mừng bạn đã thành công</p>
+        </div>
+        <div class="toast__close">
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+
+    <!-- warning -->
+    <div class="toast toast--warn">
+        <div class="toast__icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="toast__body">
+            <h3 class="toast__title">Warning</h3>
+            <p class="toast__msg">Chúc mừng bạn đã thành công</p>
+        </div>
+        <div class="toast__close">
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+
+    <script>
+        function toast({
+            title ='', 
+            message='', 
+            type='info', 
+            duration = 3000}) 
+        {
+            const main = document.getElementById('toast');
+            if(main){
+                const toast = document.createElement('div');
+                const icons = {
+                    success: 'fas fa-check-circle',
+                    info: 'fas fa-info-circle',
+                    warn: 'fas fa-exclamation-triangle'
+                };
+
+                //Auto remove
+                const autoRemoveId = setTimeout(function() {
+                    main.removeChild(toast);
+                }, duration + 1000);
+
+                //Remove when clicked
+                toast.onclick = function(event) {
+                    if (event.target.closest('.toast__close')) {
+                        main.removeChild(toast);
+                        clearTimeout(autoRemoveId);
+                    } 
+                }
+
+                const icon = icons[type];
+                const delay = (duration / 1000).toFixed(2);
+
+                toast.classList.add('toast', `toast--${type}`);
+                toast.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+
+                toast.innerHTML = `
+                    <div class="toast__icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="toast__body">
+                        <h3 class="toast__title">${title}</h3>
+                        <p class="toast__msg">${message}</p>
+                    </div>
+                    <div class="toast__close">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                main.appendChild(toast);
+
+                setTimeout(function() {
+                    main.removeChild(toast);
+                }, duration + 1000);
+            };
+        };
+
+        function showToastMessageSuccess() {
+            toast({
+                title: 'Thành công',
+                message: 'Chúc mừng bạn đã đăng ký thành công',
+                type: 'success',
+                duration: 5000
+            });
+        };
+
+        function showToastMessageWarn() {
+            toast({
+                title: 'Cảnh báo',
+                message: 'Thông tin bạn nhập không hợp lệ',
+                type: 'warn',
+                duration: 5000
+            });
+        };
+
+    </script>
+</body>
+</html>
